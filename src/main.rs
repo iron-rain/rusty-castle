@@ -1,12 +1,16 @@
 #![warn(clippy::all, clippy::pedantic)]
 
 mod map;
+mod player;
+mod map_builder;
 
 mod prelude {
     pub use bracket_lib::prelude::*;
     pub const SCREEN_WIDTH: i32 = 80;
     pub const SCREEN_HEIGHT: i32 = 50;
     pub use crate::map::*;
+    pub use crate::player::*;
+    pub use crate::map_builder::*;
 }
 
 use prelude::*;
@@ -22,12 +26,16 @@ fn main() -> BError {
 
 struct State {
     map: Map,
+    player: Player
 }
 
 impl State {
     fn new() -> Self {
+        let mut rng = RandomNumberGenerator::new();
+        let map_builder = MapBuilder::new(&mut rng);
         State {
-            map: Map::new()
+            map: map_builder.map,
+            player: Player::new(map_builder.player_start)
         }
     }
 }
@@ -35,6 +43,8 @@ impl State {
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
         ctx.cls();
+        self.player.update(ctx, &self.map);
         self.map.render(ctx);
+        self.player.render(ctx);
     }
 }

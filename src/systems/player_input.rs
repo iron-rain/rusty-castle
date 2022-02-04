@@ -7,8 +7,8 @@ pub fn player_input(
     ecs: &mut SubWorld,
     #[resource] map: &Map,
     #[resource] key: &Option<VirtualKeyCode>,
-    #[resource] camera: &mut Camera) 
-{
+    #[resource] camera: &mut Camera,
+) {
     if let Some(key) = key {
         let delta = match key {
             VirtualKeyCode::A => Point::new(-1, 0),
